@@ -20,16 +20,14 @@ class ViewController: UIViewController {
                                                selector: #selector(self.didDisconnectController),
                                                name: NSNotification.Name.GCControllerDidDisconnect,
                                                object: nil)
-        
+	    
         GCController.startWirelessControllerDiscovery {}
+		self.registerControllerHandler()
     }
     
-
-    @objc func didConnectController(_ notification: Notification) {
-        
-        //guard controllers.count < maximumControllerCount else { return }
-        //let controller = notification.object as! GCController
-        for controller in GCController.controllers() {
+    func registerControllerHandler()
+	{
+	    for controller in GCController.controllers() {
             controllers.insert(controller)
             if controllers.count > 1 { break }
 			    			
@@ -68,8 +66,15 @@ class ViewController: UIViewController {
             controller.extendedGamepad?.leftThumbstickButton?.pressedChangedHandler =  { (button, value, pressed) in self.buttonChangedHandler(GAMEPAD_BUTTON_LSTICK, pressed) }
             controller.extendedGamepad?.rightThumbstickButton?.pressedChangedHandler = { (button, value, pressed) in self.buttonChangedHandler(GAMEPAD_BUTTON_RSTICK, pressed) }
 		}
+	}
+	
+    @objc func didConnectController(_ notification: Notification) {
+        
+        //guard controllers.count < maximumControllerCount else { return }
+        //let controller = notification.object as! GCController
+        self.registerControllerHandler()
     }
-    
+	
     @objc func didDisconnectController(_ notification: Notification) {
         
         let controller = notification.object as! GCController
