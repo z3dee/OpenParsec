@@ -6,13 +6,13 @@ class ParsecGLKRenderer:NSObject, GLKViewDelegate, GLKViewControllerDelegate
 	var glkView:GLKView
 	var glkViewController:GLKViewController
     var lastWidth:CGFloat
-	
+	var FramesNotFlush:UInt32
 	init(_ view:GLKView, _ viewController:GLKViewController)
 	{
 		glkView = view
 		glkViewController = viewController
         lastWidth = 1.0
-		
+		FramesNotFlush = 0
 		super.init()
 
 		glkView.delegate = self
@@ -35,7 +35,15 @@ class ParsecGLKRenderer:NSObject, GLKViewDelegate, GLKViewControllerDelegate
 	        lastWidth = view.frame.size.width
 		}
 		CParsec.renderFrame(.opengl)
-		//glFlush()
+		if FramesNotFlush <= 5
+		{
+		    FramesNotFlush = FramesNotFlush + 1
+		}
+		else
+		{
+		    glFlush()
+			FramesNotFlush = 0
+		}
 	}
 
 	func glkViewControllerUpdate(_ controller:GLKViewController) { }
