@@ -2,7 +2,7 @@ import UIKit
 import GameController
 import ParsecSDK
 
-class ViewController: UIViewController {
+class GamepadViewController: UIViewController {
     
     private let maximumControllerCount: Int = 1
     private(set) var controllers = Set<GCController>()
@@ -117,6 +117,6 @@ class ViewController: UIViewController {
 }
 
 protocol InputManagerDelegate: AnyObject {
-    func inputManager(_ manager: ViewController, didConnect controller: GCController)
-    func inputManager(_ manager: ViewController, didDisconnect controller: GCController)
+    func inputManager(_ manager: GamepadViewController, didConnect controller: GCController)
+    func inputManager(_ manager: GamepadViewController, didDisconnect controller: GCController)
 }

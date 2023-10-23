@@ -40,7 +40,7 @@ struct ParsecView:View
 				.zIndex(2)
 			UIViewControllerWrapper(KeyboardViewController())
 				.zIndex(-1)
-            UIViewControllerWrapper(ViewController())
+            UIViewControllerWrapper(GamepadViewController())
 			    .zIndex(-2)
 				
 			// Overlay elements
@@ -49,7 +49,7 @@ struct ParsecView:View
                 VStack()
                 {
                     Text("\(MetricInfo1)")
-                        .frame(minWidth:800, maxWidth:1800, maxHeight:20)
+                        .frame(minWidth:200, maxWidth:.infinity, maxHeight:20)
                         .multilineTextAlignment(.leading)
                         .font(.system(size: 10))
                         .lineSpacing(20)
@@ -58,7 +58,6 @@ struct ParsecView:View
                 .background(Rectangle().fill(Color("BackgroundPrompt").opacity(0.75)))
                 .foregroundColor(Color("Foreground"))
                 .frame(maxHeight: .infinity, alignment: .top)
-                .cornerRadius(0)
                 .zIndex(1)
 				.edgesIgnoringSafeArea(.all)
             }
@@ -99,14 +98,14 @@ struct ParsecView:View
 							}
 							Button(action:toggleMute)
 							{
-								Text("Sound \(muted ? "OFF" : "ON")")
+								Text("Sound: \(muted ? "OFF" : "ON")")
 									.padding(12)
 									.frame(maxWidth:.infinity)
 									.multilineTextAlignment(.center)
 							}
 							Button(action:toggleH265)
 							{
-								Text("Decoder \(preferH265 ? "prefer H265" : "H264")")
+								Text("Decoder: \(preferH265 ? "prefer H265" : "H264")")
 									.padding(12)
 									.frame(maxWidth:.infinity)
 									.multilineTextAlignment(.center)
@@ -163,7 +162,7 @@ struct ParsecView:View
 		
 		    if showMenu == false
 			{
-			    var pcs = ParsecClientStatus()
+			    //var pcs = ParsecClientStatus()
 		        let status = CParsec.getStatus()
 		        if status != PARSEC_OK
 		        {
@@ -186,8 +185,9 @@ struct ParsecView:View
 	            let str = FromBuf(ptr: &pcs.decoder.0.name.0, length: 16)
 			    MetricInfo1 = "Decode \(String(format:"%.2f", pcs.`self`.metrics.0.decodeLatency))ms    Encode \(String(format:"%.2f", pcs.`self`.metrics.0.encodeLatency))ms    Network \(String(format:"%.2f", pcs.`self`.metrics.0.networkLatency))ms    Bitrate \(String(format:"%.2f", pcs.`self`.metrics.0.bitrate))Mbps    \(pcs.decoder.0.h265 ? "H265" : "H264") \(pcs.decoder.0.width)x\(pcs.decoder.0.height) \(pcs.decoder.0.color444 ? "4:4:4" : "4:2:0") \(str)"	    
 			}
-			CParsec.setMuted(muted)
 		}
+        
+        CParsec.setMuted(muted)
 	}
 
 	func stopPollTimer()
