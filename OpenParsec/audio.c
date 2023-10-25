@@ -41,7 +41,7 @@ static void audio_queue_callback(void *opaque, AudioQueueRef queue, AudioQueueBu
 {
     struct audio *ctx = (struct audio *) opaque;
     int deltaBuf = 0;
-	int silence_use_count = int(silence_buf->mUserData);
+	int silence_use_count = (int)(silence_buf->mUserData);
 	
     if (ctx == NULL)
         return;
@@ -85,7 +85,7 @@ static void audio_queue_callback(void *opaque, AudioQueueRef queue, AudioQueueBu
 		else if (silence_use_count == 0)
 		{
 			AudioQueueEnqueueBuffer(ctx->q, silence_buf, 0, NULL);
-			int tmp = int(silence_buf->mUserData);
+			int tmp = (int)(silence_buf->mUserData);
 			++tmp;
 			silence_buf->mUserData = (void *)(tmp);
 		}
