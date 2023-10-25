@@ -8,7 +8,7 @@
 #define BUFFER_SIZE 4096
 #define SILENT_SIZE 4096
 #define FAKE_SIZE  0
-#define ALLOW_DELAY 6
+#define ALLOW_DELAY 16
 
 bool isMuted = false;
 bool isStart = false;
