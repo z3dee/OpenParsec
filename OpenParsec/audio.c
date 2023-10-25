@@ -8,7 +8,7 @@
 #define BUFFER_SIZE 4096
 #define SILENT_SIZE 4096
 #define FAKE_SIZE  0
-#define ALLOW_DELAY 16
+#define ALLOW_DELAY 8
 
 bool isMuted = false;
 bool isStart = false;
@@ -41,7 +41,7 @@ static void audio_queue_callback(void *opaque, AudioQueueRef queue, AudioQueueBu
 {
     struct audio *ctx = (struct audio *) opaque;
     int deltaBuf = 0;
-	int silence_use_count = (int)(silence_buf->mUserData);
+	//int silence_use_count = (int)(silence_buf->mUserData);
 	
     if (ctx == NULL)
         return;
@@ -58,7 +58,8 @@ static void audio_queue_callback(void *opaque, AudioQueueRef queue, AudioQueueBu
 	}
 	else
 	{
-		--silence_use_count;	
+		//silence_use_count = 0;	
+		silence_buf->mUserData = (void *)(0);
 	}
 	deltaBuf = *((int *)((*ctx->rcm.first->curt)->mUserData));
 	deltaBuf = deltaBuf - lastbuf - 1;
@@ -77,6 +78,7 @@ static void audio_queue_callback(void *opaque, AudioQueueRef queue, AudioQueueBu
 	}
 	else
 	{
+		int silence_use_count = (int)(silence_buf->mUserData);
 		if ( deltaBuf > 0 )
 		{
 			AudioQueueEnqueueBuffer(ctx->q, (*(ctx->rcm.last_to_queue->next->curt)), 0, NULL);
@@ -85,9 +87,9 @@ static void audio_queue_callback(void *opaque, AudioQueueRef queue, AudioQueueBu
 		else if (silence_use_count == 0)
 		{
 			AudioQueueEnqueueBuffer(ctx->q, silence_buf, 0, NULL);
-			int tmp = (int)(silence_buf->mUserData);
-			++tmp;
-			silence_buf->mUserData = (void *)(tmp);
+			//int tmp = (int)(silence_buf->mUserData);
+			//++tmp;
+			silence_buf->mUserData = (void *)(1);
 		}
 	}
 	//else //if ((*ctx->rcm.last_use)->mAudioDataByteSize == FAKE_SIZE)
