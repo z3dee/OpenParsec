@@ -14,6 +14,9 @@ bool isMuted = false;
 bool isStart = false;
 int lastbuf = 0;
 
+unsigned int silence_inqueue = 0;
+unsigned int silence_outqueue = 0;
+
 AudioQueueBufferRef silence_buf;
 typedef struct RecycleChain {
     AudioQueueBufferRef *curt;
@@ -59,39 +62,56 @@ static void audio_queue_callback(void *opaque, AudioQueueRef queue, AudioQueueBu
 	else
 	{
 		//silence_use_count = 0;	
-		silence_buf->mUserData = (void *)(0);
+		//silence_buf->mUserData = (void *)(0);
+		++silence_outqueue;
 	}
 	deltaBuf = *((int *)((*ctx->rcm.first->curt)->mUserData));
 	deltaBuf = deltaBuf - lastbuf - 1;
 	if (deltaBuf < 0) deltaBuf += NUM_AUDIO_BUF;
 	
-	RecycleChain *tmp = ctx->rcm.last_to_queue->next;
-	//if ( /*(*tmp->curt)->mAudioDataByteSize != FAKE_SIZE &&*/ tmp != ctx->rcm.first)
-	if (deltaBuf > ALLOW_DELAY)
+	while(ctx->rcm.last_to_queue->next != ctx->rcm.first)
 	{
-		//while(ctx->rcm.last_to_queue->next != ctx->rcm.first)
-		for (int i = 0; i < deltaBuf - ALLOW_DELAY + 1; ++i)
-		{
-		    AudioQueueEnqueueBuffer(ctx->q, (*(ctx->rcm.last_to_queue->next->curt)), 0, NULL);
-		    ctx->rcm.last_to_queue = ctx->rcm.last_to_queue->next;
-		}
+		AudioQueueEnqueueBuffer(ctx->q, (*(ctx->rcm.last_to_queue->next->curt)), 0, NULL);
+		ctx->rcm.last_to_queue = ctx->rcm.last_to_queue->next;
 	}
-	else
+	
+	if (deltaBuf + silence_inqueue < 3 + silence_outqueue)
 	{
-		int silence_use_count = (int)(silence_buf->mUserData);
-		if ( deltaBuf > 0 )
-		{
-			AudioQueueEnqueueBuffer(ctx->q, (*(ctx->rcm.last_to_queue->next->curt)), 0, NULL);
-		    ctx->rcm.last_to_queue = ctx->rcm.last_to_queue->next;
-		}
-		else if (silence_use_count == 0)
+		int numAddBuffer = ((silence_inqueue >= silence_outqueue) ? (3-deltaBuf-(int)(silence_inqueue-silence_outqueue)) : (3 - deltaBuf - (int)((unsigned int)(0xFFFFFFFF)-silence_outqueue + silence_inqueue + 1)));
+		for (int i=0; i<numAddBuffer; ++i)
 		{
 			AudioQueueEnqueueBuffer(ctx->q, silence_buf, 0, NULL);
-			//int tmp = (int)(silence_buf->mUserData);
-			//++tmp;
-			silence_buf->mUserData = (void *)(1);
 		}
+		if (numAddBuffer > 0) silence_inqueue += numAddBuffer;
 	}
+	
+	//RecycleChain *tmp = ctx->rcm.last_to_queue->next;
+	//if ( /*(*tmp->curt)->mAudioDataByteSize != FAKE_SIZE &&*/ tmp != ctx->rcm.first)
+	//if (deltaBuf > ALLOW_DELAY)
+	//{
+	//	//while(ctx->rcm.last_to_queue->next != ctx->rcm.first)
+	//	for (int i = 0; i < deltaBuf - ALLOW_DELAY + 1; ++i)
+	//	{
+	//	    AudioQueueEnqueueBuffer(ctx->q, (*(ctx->rcm.last_to_queue->next->curt)), 0, NULL);
+	//	    ctx->rcm.last_to_queue = ctx->rcm.last_to_queue->next;
+	//	}
+	//}
+	//else
+	//{
+	//	int silence_use_count = (int)(silence_buf->mUserData);
+	//	if ( deltaBuf > 0 )
+	//	{
+	//		AudioQueueEnqueueBuffer(ctx->q, (*(ctx->rcm.last_to_queue->next->curt)), 0, NULL);
+	//	    ctx->rcm.last_to_queue = ctx->rcm.last_to_queue->next;
+	//	}
+	//	else if (silence_use_count == 0)
+	//	{
+	//		AudioQueueEnqueueBuffer(ctx->q, silence_buf, 0, NULL);
+	//		//int tmp = (int)(silence_buf->mUserData);
+	//		//++tmp;
+	//		silence_buf->mUserData = (void *)(1);
+	//	}
+	//}
 	//else //if ((*ctx->rcm.last_use)->mAudioDataByteSize == FAKE_SIZE)
 	//{
 	//	AudioQueueEnqueueBuffer(ctx->q, silence_buf, 0, NULL);
