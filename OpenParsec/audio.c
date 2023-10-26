@@ -4,12 +4,12 @@
 
 #include <AudioToolbox/AudioToolbox.h>
 
-#define NUM_AUDIO_BUF 16
+#define NUM_AUDIO_BUF 8
 #define BUFFER_SIZE 4096
 #define SILENT_SIZE 4096
 #define FAKE_SIZE  0
 #define ALLOW_DELAY 8
-
+#define LOWEST_NUM_BUFFER 3
 bool isMuted = false;
 bool isStart = false;
 int lastbuf = 0;
@@ -75,9 +75,10 @@ static void audio_queue_callback(void *opaque, AudioQueueRef queue, AudioQueueBu
 		ctx->rcm.last_to_queue = ctx->rcm.last_to_queue->next;
 	}
 	
-	if (deltaBuf + silence_inqueue < 3 + silence_outqueue)
+	if (deltaBuf + silence_inqueue < LOWEST_NUM_BUFFER + silence_outqueue)
 	{
-		int numAddBuffer = ((silence_inqueue >= silence_outqueue) ? (3-deltaBuf-(int)(silence_inqueue-silence_outqueue)) : (3 - deltaBuf - (int)((unsigned int)(0xFFFFFFFF)-silence_outqueue + silence_inqueue + 1)));
+		int numAddBuffer = ((silence_inqueue >= silence_outqueue) ? (LOWEST_NUM_BUFFER - deltaBuf - (int)(silence_inqueue-silence_outqueue)) : (LOWEST_NUM_BUFFER - deltaBuf - (int)((unsigned int)(0xFFFFFFFF)-silence_outqueue + silence_inqueue + 1)));
+		if (numAddBuffer > LOWEST_NUM_BUFFER) numAddBuffer = LOWEST_NUM_BUFFER - deltaBuf;
 		for (int i=0; i<numAddBuffer; ++i)
 		{
 			AudioQueueEnqueueBuffer(ctx->q, silence_buf, 0, NULL);
