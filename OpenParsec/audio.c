@@ -65,6 +65,9 @@ static void audio_queue_callback(void *opaque, AudioQueueRef queue, AudioQueueBu
 		//silence_buf->mUserData = (void *)(0);
 		++silence_outqueue;
 	}
+	
+	if (isMuted) return;
+	
 	deltaBuf = *((int *)((*ctx->rcm.first->curt)->mUserData));
 	deltaBuf = deltaBuf - lastbuf - 1;
 	if (deltaBuf < 0) deltaBuf += NUM_AUDIO_BUF;
@@ -190,6 +193,7 @@ void audio_init(struct audio **ctx_out)
 	ctx->fail_num = 0;
 	ctx->in_use = 0;
 	
+	silence_inqueue = silence_outqueue = 0;
 	char silence[SILENT_SIZE] = {0};
 	AudioQueueAllocateBuffer(ctx->q, SILENT_SIZE, &silence_buf);
 	memcpy(silence_buf->mAudioData, &silence[0], SILENT_SIZE);
@@ -217,6 +221,7 @@ void audio_destroy(struct audio **ctx_out)
     *ctx_out = NULL;
 	isStart = false;
 	AudioQueueFreeBuffer(ctx->q, silence_buf);
+	silence_inqueue = silence_outqueue = 0;
 }
 
 void audio_clear(struct audio **ctx_out)
@@ -226,8 +231,8 @@ void audio_clear(struct audio **ctx_out)
     
 	//RecycleChain *rcTraverse = NULL;
     struct audio *ctx = *ctx_out;
-    //if (ctx->q)
-    //    AudioQueueStop(ctx->q, true);
+    if (ctx->q)
+        AudioQueueStop(ctx->q, true);
     
 	//rcTraverse = ctx->rcm.rc;
 	for (int32_t x = 0; x < NUM_AUDIO_BUF; x++) {
@@ -247,6 +252,7 @@ void audio_clear(struct audio **ctx_out)
 	isStart = false;
 	ctx->in_use = 0;
 	ctx->fail_num = 0;
+	silence_inqueue = silence_outqueue = 0;
 }
 
 void audio_cb(const int16_t *pcm, uint32_t frames, void *opaque)
