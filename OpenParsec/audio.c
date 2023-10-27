@@ -226,8 +226,8 @@ void audio_clear(struct audio **ctx_out)
     
 	//RecycleChain *rcTraverse = NULL;
     struct audio *ctx = *ctx_out;
-    if (ctx->q)
-        AudioQueueStop(ctx->q, true);
+    //if (ctx->q)
+    //    AudioQueueStop(ctx->q, true);
     
 	//rcTraverse = ctx->rcm.rc;
 	for (int32_t x = 0; x < NUM_AUDIO_BUF; x++) {
