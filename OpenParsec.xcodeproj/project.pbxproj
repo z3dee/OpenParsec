@@ -30,6 +30,8 @@
 		27E61AAA2929B92200FF6563 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27E61AA92929B92200FF6563 /* MainView.swift */; };
 		27ED36FF292D4F9800B1BE3D /* NetworkHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27ED36FE292D4F9800B1BE3D /* NetworkHandler.swift */; };
 		84480EBE2ADC4FDA007DE5F1 /* GameController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84480EBD2ADC4FDA007DE5F1 /* GameController.swift */; };
+		84480EC02AEE0ECE007DE5F1 /* ParsecMTLRender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84480EBF2AEE0ECD007DE5F1 /* ParsecMTLRender.swift */; };
+		84480EC22AEE0EDB007DE5F1 /* ParsecMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84480EC12AEE0EDB007DE5F1 /* ParsecMetalView.swift */; };
 		FC16A7AD29A97BDA00BB70A7 /* Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC16A7AC29A97BDA00BB70A7 /* Shared.swift */; };
 /* End PBXBuildFile section */
 
@@ -74,6 +76,8 @@
 		27E61AA92929B92200FF6563 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		27ED36FE292D4F9800B1BE3D /* NetworkHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkHandler.swift; sourceTree = "<group>"; };
 		84480EBD2ADC4FDA007DE5F1 /* GameController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameController.swift; sourceTree = "<group>"; };
+		84480EBF2AEE0ECD007DE5F1 /* ParsecMTLRender.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParsecMTLRender.swift; sourceTree = "<group>"; };
+		84480EC12AEE0EDB007DE5F1 /* ParsecMetalView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParsecMetalView.swift; sourceTree = "<group>"; };
 		FC16A7AC29A97BDA00BB70A7 /* Shared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -117,6 +121,8 @@
 		27E61A90292965FC00FF6563 /* OpenParsec */ = {
 			isa = PBXGroup;
 			children = (
+				84480EC12AEE0EDB007DE5F1 /* ParsecMetalView.swift */,
+				84480EBF2AEE0ECD007DE5F1 /* ParsecMTLRender.swift */,
 				84480EBD2ADC4FDA007DE5F1 /* GameController.swift */,
 				27899AC5292FE2A9001ACA33 /* audio.c */,
 				27899AC6292FE2A9001ACA33 /* audio.h */,
@@ -233,6 +239,8 @@
 				27E61A92292965FC00FF6563 /* AppDelegate.swift in Sources */,
 				27E61AAA2929B92200FF6563 /* MainView.swift in Sources */,
 				271D14FD292EAA3600D7F1D6 /* ParsecGLKViewController.swift in Sources */,
+				84480EC02AEE0ECE007DE5F1 /* ParsecMTLRender.swift in Sources */,
+				84480EC22AEE0EDB007DE5F1 /* ParsecMetalView.swift in Sources */,
 				274A69CF29EA07FA00F595A5 /* SettingsView.swift in Sources */,
 				27E61AA8292994B500FF6563 /* ActivityIndicator.swift in Sources */,
 				271D14FC292EAA3600D7F1D6 /* ParsecGLKRenderer.swift in Sources */,

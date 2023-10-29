@@ -28,7 +28,8 @@ struct ParsecView:View
 		ZStack()
 		{
 			// Stream view controller
-			ParsecGLKViewController()
+			//ParsecGLKViewController()
+			MetalView()
 				.zIndex(0)
                 .edgesIgnoringSafeArea(.all)
 				//.onAppear(perform:startAudioPollTimer)
@@ -149,7 +150,7 @@ struct ParsecView:View
     func FromBuf(ptr: UnsafeMutablePointer<CChar>, length len: Int) -> String {
         // convert the bytes using the UTF8 encoding
         //let theString = NSString(bytes: ptr, length: len, encoding: NSUTF8StringEncoding)
-		let theString = NSString(bytes: ptr, length: len, encoding: NSASCIIStringEncoding)
+        let theString = NSString(bytes: ptr, length: len, encoding: String.Encoding.ascii.rawValue)
         return theString as! String
     }
 	

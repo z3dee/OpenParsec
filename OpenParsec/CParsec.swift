@@ -1,9 +1,11 @@
 import ParsecSDK
 import UIKit
+import MetalKit
 
 enum RendererType
 {
 	case opengl
+	case metal
 }
 
 class CParsec
@@ -91,12 +93,14 @@ class CParsec
 		hostHeight = Float(height)
 	}
 
-	static func renderFrame(_ type:RendererType, timeout:UInt32 = 16) // timeout in ms, 16 == 60 FPS, 8 == 120 FPS
+	static func renderFrame(_ type:RendererType, cq: inout MTLCommandQueue, texturePtr: inout UnsafeMutableRawPointer?, timeout:UInt32 = 16) // timeout in ms, 16 == 60 FPS, 8 == 120 FPS
 	{
 		switch type
 		{
 			case .opengl:
 				ParsecClientGLRenderFrame(_parsec, UInt8(DEFAULT_STREAM), nil, nil, timeout)
+			case .metal:
+				ParsecClientMetalRenderFrame(_parsec, UInt8(DEFAULT_STREAM), &cq, &texturePtr, nil, nil, timeout)
 		}
 	}
 
